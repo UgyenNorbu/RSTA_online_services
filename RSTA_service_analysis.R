@@ -291,18 +291,18 @@ repl_LL_grouped %>%
 ggsave("9_replacement_LL.jpg", width = 25, height = 15, units = "cm")
 
 # 10. TRAFFIC RULE VIOLATIONS ---------------------------------------------
-TIN_details <- readxl::read_xlsx("OffenceDetails_Jan-Dec2019.xlsx")
+TIN_details <- readxl::read_xlsx("raw_data/OffenceDetails_Jan-Dec2019.xlsx")
 
 TIN_details <- TIN_details %>% 
     mutate(payment_mode = ifelse(str_length(Receipt_Number) == 12,"Online", "Cash")) %>% 
     mutate(region_name = ifelse(is.na(region_name), "Thimphu", region_name)) %>% 
-    mutate(payment_mode = ifelse(is.na(Receipt_Number), "Unknown", payment_mode))
+    mutate(payment_mode = ifelse(is.na(Receipt_Number), "Not paid", payment_mode))
  
 TIN_grouped <- TIN_details %>% 
     group_by(region_name, payment_mode) %>% 
     summarise(number = n())
 
-WriteXLS(TIN_grouped, "10_payment_of_fine.xlsx")
+WriteXLS(TIN_grouped, "agg_data/10_payment_of_fine.xlsx")
 
 TIN_grouped %>% 
     ggplot(aes(x = payment_mode, y = number, fill = payment_mode))+
@@ -311,12 +311,12 @@ TIN_grouped %>%
     labs(x = "Payment mode",
          y = "Number",
          title = "Payment of fines & penalties (Jan-Dec, 2019)") +
-    scale_fill_manual(values =c("#6CA6CD", "#87CEFA", "#CFCFCF")) +
+    scale_fill_manual(values =c("#87CEFA", "#CFCFCF", "#6CA6CD")) +
     theme_minimal() +
     coord_flip() +
     theme(legend.position = "none") +
-    my_theme 
-ggsave("10_payment_of_fines.jpg", width = 25, height = 15, units = "cm")
+    my_theme
+ggsave("image_output/10_payment_of_fines.jpg", width = 25, height = 15, units = "cm")
 
 # 11. RC CANCELLATION -----------------------------------------------------
 RC_cancellation <- readxl::read_xlsx("VehicleDetails_Cancellation_Jan-Dec2019.xlsx")
@@ -496,7 +496,7 @@ RC_transfer_grouped %>%
     my_theme
 ggsave("16_RC_ownership_transfer.jpg", width = 25, height = 15, units = "cm")
 
-# 17.  RC RENEWAL ---------------------------------------------------------
+# 17. RC RENEWAL ---------------------------------------------------------
 
 RC_renew_org <- readxl::read_xlsx("VehicleDetails_Renewal_Org_Jan-Dec2019.xlsx")
 
@@ -560,7 +560,7 @@ RC_renew_total_grouped %>%
     theme(legend.position = "top") +
     my_theme
 
-ggsave("17_RC_renewal.jpg", width = 25, height = 15, units = "cm")
+ggsave("image_output/17_RC_renewal.jpg", width = 25, height = 15, units = "cm")
 
 # 18. RC REPLACEMENT ------------------------------------------------------
 RC_rep <- readxl::read_xlsx("VehicleDetails_Replacement_Jan-Dec2019.xlsx")
